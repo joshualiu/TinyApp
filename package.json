@@ -1,0 +1,23 @@
+{
+  "name": "tinyapp",
+  "version": "1.0.0",
+  "description": "a full stack web app to shorten long URLs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhonghaoliu/TinyApp.git"
+  },
+  "author": "joshua",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zhonghaoliu/TinyApp/issues"
+  },
+  "homepage": "https://github.com/zhonghaoliu/TinyApp#readme",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2"
+  }
+}

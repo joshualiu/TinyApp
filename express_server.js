@@ -45,11 +45,27 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+app.get("/u/:shortURL", (req, res) => {
+  let longURL = urlDatabase[req.params.shortURL];
+  res.redirect(longURL);
+});
+
 app.post("/urls", (req, res) => {
   let POSTrequest = req.body.longURL;
   console.log(POSTrequest);  // debug statement to see POST parameters
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  let tempShort = generateRandomString();
+  urlDatabase[tempShort] = POSTrequest;
+  res.redirect("/urls");         // Respond with 'Ok' (we will replace this)
 });
+
+
+
+
+
+
+
+
+
 
 
 

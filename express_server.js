@@ -124,10 +124,13 @@ app.post("/logout", (req, res) => {
 app.post("/register", (req, res) => {
   let tempEmail = req.body.email;
   let tempPassword = req.body.password;
-  console.log(tempEmail, tempPassword);
+  let tempId = generateRandomString();
+  users[tempId] = {id: tempId, email: tempEmail, password: tempPassword};
+  res.cookie("user_id", tempId);
+  console.log(users);
+
+  res.redirect("/urls");
 })
-
-
 
 
 

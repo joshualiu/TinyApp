@@ -22,13 +22,31 @@ function generateRandomString() {
   return text;
 }
 
+// global objects to save data:
 let urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  },
+  "jojosh": {
+    id: "jojosh",
+    email: "jojosh@mail.com",
+    password: "pwddd"
+  }
+};
 
-
+//GET
 app.get("/", (req, res) => {
   res.end("Hello!");
 });
@@ -57,6 +75,20 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+
+
+//Thursday code
+app.get("/register", (req, res) => {
+  res.render("register", { username: req.cookies["username"]});
+});
+
+
+
+
+
+
+
+//POST
 app.post("/urls", (req, res) => {
   let POSTrequest = req.body.longURL;
   console.log(POSTrequest);  // debug statement to see POST parameters
@@ -86,6 +118,20 @@ app.post("/logout", (req, res) => {
   res.redirect('/urls');
 });
 
+
+
+//Thursday code
+app.post("/register", (req, res) => {
+  let tempEmail = req.body.email;
+  let tempPassword = req.body.password;
+  console.log(tempEmail, tempPassword);
+})
+
+
+
+
+
+
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
@@ -93,7 +139,6 @@ app.get("/urls.json", (req, res) => {
 app.get("/hello", (req, res) => {
   res.end("<html><body>Hello <b>World</b></body></html>\n");
 });
-
 
 
 app.listen(PORT, () => {

@@ -2,16 +2,20 @@
 <html lang="en">
   <head></head>
   <body>
-    <% if(username){ %>
-      <a><form action="/logout", method="POST">Username: <%= username %>
+    <header>
+      <h6>This is a header: </h6>
+    </header>
+    <% if(user){ %>
+      <a><form action="/logout", method="POST">Your are logged in as: <%= user.id %>
       <input type="submit" value="logout">
       </form>
       </a>
     <% } else{ %>
-      <form action="/login" method="POST">
-        <input id="username" type="text" name="username" style="width: 300px">
-        <input type="submit" value="Submit">
-      </form>
+      <a>You are not logged in, please
+        <a href ='/register'>Register</a>
+        or <a href ='/login'>Login</a>
+      </a>
     <% } %>
+
   </body>
 </html>

@@ -31,7 +31,8 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let templateVars = { urls: urlDatabase,
+                       PORT: PORT };
   res.render("urls_index", templateVars);
 });
 
@@ -58,19 +59,16 @@ app.post("/urls", (req, res) => {
   res.redirect("/urls");         // Respond with 'Ok' (we will replace this)
 });
 
+app.post("/urls/:id", (req, res) => {
+  urlDatabase[req.params.id]=req.body.longURL;
+  res.redirect('/urls');
+});
+
 app.post("/urls/:id/delete", (req, res) => {
   let id = req.params.id;
   delete urlDatabase[id];
   res.redirect("/urls");
-})
-
-
-
-
-
-
-
-
+});
 
 
 app.get("/urls.json", (req, res) => {

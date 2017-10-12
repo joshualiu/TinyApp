@@ -58,7 +58,11 @@ app.post("/urls", (req, res) => {
   res.redirect("/urls");         // Respond with 'Ok' (we will replace this)
 });
 
-
+app.post("/urls/:id/delete", (req, res) => {
+  let id = req.params.id;
+  delete urlDatabase[id];
+  res.redirect("/urls");
+})
 
 
 

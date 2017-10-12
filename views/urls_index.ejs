@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TinyApp</title>
+</head>
+<body>
+  <header>
+    <% include ./partials/_header %>
+  </header>
+  <ul>
+    <% for (let key in urls) { %>
+      <p>
+        <li><%= key %>--> <%= urls[key] %></li>
+      </p>
+    <% }; %>
+  </ul>
+</body>
+
+</html>

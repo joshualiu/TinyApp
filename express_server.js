@@ -4,6 +4,9 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8080; // default port 8080
 const bodyParser = require("body-parser");
+
+const bcrypt = require('bcrypt');
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 
@@ -68,22 +71,22 @@ const users = {
   "user1": {
     id: "user1",
     email: "user1@gmail.com",
-    password: "user1"
+    password: `${bcrypt.hashSync("user", 10)}`
   },
  "user2": {
     id: "user2",
     email: "user2@gmail.com",
-    password: "user2"
+    password: `${bcrypt.hashSync("user2", 10)}`
   },
   "josh": {
     id: "josh",
     email: "josh@gmail.com",
-    password: "josh"
+    password: `${bcrypt.hashSync("josh", 10)}`
   },
   "test": {
     id: "test",
     email: "test@gmail.com",
-    password: "test"
+    password: `${bcrypt.hashSync("test", 10)}`
   }
 };
 
@@ -244,7 +247,7 @@ app.post("/login", (req, res) => {
 
   for (let key in users) {
     if (users[key]['email'] === curEmail) {
-      if (users[key]['password'] === curPassword) {
+      if (bcrypt.compareSync(curPassword, users[key]['password'])) {
         res.cookie("user_id", key);
         res.redirect('/urls');
         return ;
@@ -262,19 +265,23 @@ app.post("/login", (req, res) => {
 app.post("/register", (req, res) => {
   let tempEmail = req.body.email;
   let tempPassword = req.body.password;
+  let hashedPassword = bcrypt.hashSync(tempPassword, 10);
   let emailList = [];
+  console.log(tempPassword, tempEmail);
   for (let key in users) {
     emailList.push(users[key]['email']);
   }
-  if (tempEmail || tempPassword) {
+  if (tempEmail == '' || tempPassword == '') {
     res.status(400).send("Email or Password could not be empty :/");
+    return ;
   } else if (emailList.indexOf(tempEmail) != -1) {
     res.status(400).send("Sorry, the email address has been used :/");
+    return;
   } else {
     let tempId = generateRandomString();
-    users[tempId] = {id: tempId, email: tempEmail, password: tempPassword};
+    users[tempId] = {id: tempId, email: tempEmail, password: hashedPassword};
     res.cookie("user_id", tempId);
-    console.log(req.cookies);
+    // console.log(req.cookies);
     res.redirect("/urls");
   }
 });

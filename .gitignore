@@ -59,3 +59,7 @@ typings/
 
 #MacOS
 .DS_Store
+
+
+# My own test file
+test.js

@@ -6,14 +6,16 @@
 <body>
   <header>
     <% include ./partials/_header %>
+    <h2>Update a Long URL</h2>
   </header>
   <p>
-    <li>ShortURL: <%= shortURL %>
+    <a>ShortURL: <b><%= shortURL %></b>
       <form method="POST" action="/urls/<%= shortURL %>">
-        <label for="longURL">Enter a URL: </label>
+        <label for="longURL">Enter a New Long URL: </label>
         <input id="longURL" type="text" name="longURL" placeholder="<%= longURL %>" style="width: 300px">
         <input type="submit" value="Update">
-    </li>
+      </form>
+    </a>
   </p>
 </body>
 </html>

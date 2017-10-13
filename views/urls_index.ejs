@@ -6,14 +6,14 @@
 <body>
   <header>
     <% include ./partials/_header %>
-    <h1>URLs Page (main)</h1>
+    <h1>URLs Main Page</h1>
   </header>
   <ul>
     <% for (let key in urls) { %>
-        <li><a href="<%= urls[key] %>"><%= key %></a><--> <%= urls[key] %></li>
+        <li><a href="<%= urls[key] %>"><%= key %></a> --> <%= urls[key] %></li>
         <a><a href="http://localhost:<%= PORT%>/urls/<%= key%>">Edit</a>
         <form method="POST" action="/urls/<%= key %>/delete"><button type="delete">Delete</button>
-          <br />
+          <br><br>
         </form>
       </a>
     <% }; %>

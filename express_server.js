@@ -258,14 +258,7 @@ app.post("/login", (req, res) => {
 
 });
 
-app.post("/logout", (req, res) => {
-  res.clearCookie("user_id");
-  res.redirect('/urls');
-});
 
-
-
-//Thursday code
 app.post("/register", (req, res) => {
   let tempEmail = req.body.email;
   let tempPassword = req.body.password;
@@ -273,7 +266,7 @@ app.post("/register", (req, res) => {
   for (let key in users) {
     emailList.push(users[key]['email']);
   }
-  if (tempEmail == '' || tempPassword == '') {
+  if (tempEmail || tempPassword) {
     res.status(400).send("Email or Password could not be empty :/");
   } else if (emailList.indexOf(tempEmail) != -1) {
     res.status(400).send("Sorry, the email address has been used :/");
@@ -286,7 +279,10 @@ app.post("/register", (req, res) => {
   }
 });
 
-
+app.post("/logout", (req, res) => {
+  res.clearCookie("user_id");
+  res.redirect('/login');
+});
 
 
 app.get("/urls.json", (req, res) => {

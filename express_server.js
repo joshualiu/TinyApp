@@ -10,8 +10,15 @@ const bcrypt = require('bcrypt');
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 
-const cookieParser = require('cookie-parser');
-app.use(cookieParser());
+// const cookieParser = require('cookie-parser');
+// app.use(cookieParser());
+
+const cookieSession = require('cookie-session')
+app.set('trust proxy', 1);
+app.use(cookieSession({
+  name:'session',
+  keys: ['user_id']
+}));
 
 
 //Generate 6 random alphanumeric characters
@@ -93,7 +100,7 @@ const users = {
 //GET---------------
 
 app.get("/", (req, res) => {
-  if (users[req.cookies["user_id"]]) {
+  if (users[req.session.user_id]) {
     res.redirect('/urls');
   } else {
     res.redirect('/login');
@@ -102,7 +109,7 @@ app.get("/", (req, res) => {
 
 
 app.get("/urls", (req, res) => {
-  let user = users[req.cookies["user_id"]] || 0;
+  let user = users[req.session.user_id] || 0;
   if (user) {
     let templateVars = { urls: urlsForUser(user),
                          PORT: PORT,
@@ -153,8 +160,8 @@ function urlsForUser(inputUser) {
 
 //only register and logged in users could access /urls/new
 app.get("/urls/new", (req, res) => {
-  if (users[req.cookies["user_id"]]) {
-    let templateVars = { user: users[req.cookies["user_id"]] || 0};
+  if (users[req.session.user_id]) {
+    let templateVars = { user: users[req.session.user_id] || 0};
     res.render("urls_new", templateVars);
     return ;
   } else {
@@ -165,7 +172,7 @@ app.get("/urls/new", (req, res) => {
 
 
 app.get("/urls/:id", (req, res) => {
-  let userCheck = users[req.cookies["user_id"]] || 0;
+  let userCheck = users[req.session.user_id] || 0;
   let URLexistCheck = urlDatabase[req.params.id] || 0;
   if (URLexistCheck === 0) {
     res.end("<html><body>ERROR: The shortURL does not exist!</body></html>\n");
@@ -204,19 +211,19 @@ app.get("/u/:id", (req, res) => {
 
 
 app.get("/login", (req, res) => {
-  if (users[req.cookies["user_id"]]) {
+  if (users[req.session.user_id]) {
     res.redirect('/urls');
   } else {
-    res.render("login", { user: users[req.cookies["user_id"]] || 0});
+    res.render("login", { user: users[req.session.user_id] || 0});
   }
 });
 
 
 app.get("/register", (req, res) => {
-  if (users[req.cookies["user_id"]]) {
+  if (users[req.session.user_id]) {
     res.redirect('/urls');
   } else {
-    res.render("register", { user: users[req.cookies["user_id"]] || 0});
+    res.render("register", { user: users[req.session.user_id] || 0});
   }
 });
 
@@ -224,9 +231,9 @@ app.get("/register", (req, res) => {
 //POST
 app.post("/urls", (req, res) => {
   let POSTrequest = req.body.longURL;
-  console.log(POSTrequest);  // debug statement to see POST parameters
+  // console.log(POSTrequest);  // debug statement to see POST parameters
   let tempShort = generateRandomString();
-  urlDatabase[tempShort] = { fullURL: POSTrequest, userID: req.cookies["user_id"]}
+  urlDatabase[tempShort] = { fullURL: POSTrequest, userID: req.session.user_id}
   // urlDatabase[tempShort] = POSTrequest;
   res.redirect("/urls");         // Respond with 'Ok' (we will replace this)
 });
@@ -248,7 +255,8 @@ app.post("/login", (req, res) => {
   for (let key in users) {
     if (users[key]['email'] === curEmail) {
       if (bcrypt.compareSync(curPassword, users[key]['password'])) {
-        res.cookie("user_id", key);
+        req.session.user_id = key;
+        // res.cookie("user_id", key);
         res.redirect('/urls');
         return ;
       } else {
@@ -267,7 +275,6 @@ app.post("/register", (req, res) => {
   let tempPassword = req.body.password;
   let hashedPassword = bcrypt.hashSync(tempPassword, 10);
   let emailList = [];
-  console.log(tempPassword, tempEmail);
   for (let key in users) {
     emailList.push(users[key]['email']);
   }
@@ -280,14 +287,16 @@ app.post("/register", (req, res) => {
   } else {
     let tempId = generateRandomString();
     users[tempId] = {id: tempId, email: tempEmail, password: hashedPassword};
-    res.cookie("user_id", tempId);
+    req.session.user_id = tempId;
+    // res.cookie("user_id", tempId);
     // console.log(req.cookies);
     res.redirect("/urls");
   }
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("user_id");
+  req.session = null;
+  // res.clearCookie("user_id");
   res.redirect('/login');
 });
 

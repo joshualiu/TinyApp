@@ -95,18 +95,32 @@ app.get("/", (req, res) => {
 app.get("/urls", (req, res) => {
   //test code
   let user = users[req.cookies["user_id"]] || 0;
-  let urlsObj = {};
-  for (let key in urlDatabase) {
-    if (urlDatabase[key]['userID'] === user.id) {
-      urlsObj[key] = urlDatabase[key]['fullURL'];
-    }
-  }
+  // let urlsObj = {};
+  // for (let key in urlDatabase) {
+  //   if (urlDatabase[key]['userID'] === user.id) {
+  //     urlsObj[key] = urlDatabase[key]['fullURL'];
+  //   }
+  // }
 
-  let templateVars = { urls: urlsObj,
+  let templateVars = { urls: urlsForUser(user),
                        PORT: PORT,
-                       user: users[req.cookies["user_id"]] || 0};
+                       user: user};
   res.render("urls_index", templateVars);
 });
+
+function urlsForUser(inputUser) {
+  const urlsResult = {};
+  for (let key in urlDatabase) {
+    if (urlDatabase[key]['userID'] === inputUser.id) {
+      urlsResult[key] = urlDatabase[key]['fullURL'];
+    }
+  }
+  return urlsResult;
+}
+
+
+
+
 
 // app.get("/urls/new", (req, res) => {
 //   let templateVars = { user: users[req.cookies["user_id"]]};

@@ -1,17 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head></head>
   <body>
-    <header>
-    </header>
+    <header></header>
     <% if(user){ %>
-      <a><form action="/logout", method="POST">Your are logged in as: <b><%= user.email %></b>
-      <input type="submit" value="logout">
-      </form>
+      <a>
+        <form action="/logout", method="POST">Your are logged in as: <b><%= user.email %></b>
+          <input type="submit" value="logout">
+        </form>
       </a>
     <% } else{ %>
-      <a>You are not logged in, please
-        <a href ='/login'>Login</a> or <a href ='/register'>Register</a>
+      <a>You are not logged in, please <a href ='/login'>Login</a> or <a href ='/register'>Register</a>
       </a>
     <% } %>
   </body>

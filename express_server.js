@@ -87,26 +87,28 @@ const users = {
   }
 };
 
-//GET
+//GET---------------
+
 app.get("/", (req, res) => {
-  res.end("Hello!");
+  if (users[req.cookies["user_id"]]) {
+    res.redirect('/urls');
+  } else {
+    res.redirect('/login');
+  }
 });
+
 
 app.get("/urls", (req, res) => {
-  //test code
   let user = users[req.cookies["user_id"]] || 0;
-  // let urlsObj = {};
-  // for (let key in urlDatabase) {
-  //   if (urlDatabase[key]['userID'] === user.id) {
-  //     urlsObj[key] = urlDatabase[key]['fullURL'];
-  //   }
-  // }
-
-  let templateVars = { urls: urlsForUser(user),
-                       PORT: PORT,
-                       user: user};
-  res.render("urls_index", templateVars);
-});
+  if (user) {
+    let templateVars = { urls: urlsForUser(user),
+                         PORT: PORT,
+                         user: user};
+    res.render("urls_index", templateVars);
+  } else {
+    res.end("<html><body>ERROR: You are not logged in!</body></html>\n");
+  }
+})
 
 function urlsForUser(inputUser) {
   const urlsResult = {};
@@ -117,6 +119,24 @@ function urlsForUser(inputUser) {
   }
   return urlsResult;
 }
+
+
+// app.get("/urls", (req, res) => {
+//   //test code
+//   let user = users[req.cookies["user_id"]] || 0;
+//   // let urlsObj = {};
+//   // for (let key in urlDatabase) {
+//   //   if (urlDatabase[key]['userID'] === user.id) {
+//   //     urlsObj[key] = urlDatabase[key]['fullURL'];
+//   //   }
+//   // }
+
+//   let templateVars = { urls: urlsForUser(user),
+//                        PORT: PORT,
+//                        user: user};
+//   res.render("urls_index", templateVars);
+// });
+
 
 
 
@@ -141,34 +161,61 @@ app.get("/urls/new", (req, res) => {
 });
 
 
-//
-
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { shortURL: req.params.id,
-                       longURL: urlDatabase[req.params.id]['fullURL'],
-                       user: users[req.cookies["user_id"]] || 0};
-  res.render("urls_show", templateVars);
+  let userCheck = users[req.cookies["user_id"]] || 0;
+  let URLexistCheck = urlDatabase[req.params.id] || 0;
+  if (URLexistCheck === 0) {
+    res.end("<html><body>ERROR: The shortURL does not exist!</body></html>\n");
+    return;
+  }
+
+  if (userCheck) {
+    let longURLCheck = urlDatabase[req.params.id]['fullURL'] || 0;
+    if (longURLCheck) {
+      if(userCheck.id == urlDatabase[req.params.id]['userID']) {
+        console.log('user exist and logged in, short and long urls exist and match to the user!')
+        let templateVars = {shortURL: req.params.id,
+                            longURL: longURLCheck,
+                            user: userCheck };
+        res.render("urls_show", templateVars);
+      } else {
+        console.log('user exist and logged in, short and long urls exist but dont match to the user!')
+        res.end("<html><body>ERROR:You are logged in, but you dont own the URL!</body></html>\n");
+      }
+    }
+  } else {
+    res.end("<html><body>ERROR: You are not logged in!</body></html>\n");
+  }
+
 });
 
-app.get("/u/:shortURL", (req, res) => {
-  let longURL = urlDatabase[req.params.shortURL]['fullURL'];
-  console.log(longURL)
- res.redirect(longURL);
+app.get("/u/:id", (req, res) => {
+  let longURLCheck = urlDatabase[req.params.id] || 0;
+  if (longURLCheck) {
+    res.redirect(longURLCheck['fullURL']);
+  } else {
+    res.end("<html><body>ERROR: The shortURL does not exist!</body></html>\n");
+  }
 });
 
 
-
-//Thursday code
-app.get("/register", (req, res) => {
-  res.render("register", { user: users[req.cookies["user_id"]] || 0});
-});
 
 app.get("/login", (req, res) => {
-  res.render("login", { user: users[req.cookies["user_id"]] || 0});
+  if (users[req.cookies["user_id"]]) {
+    res.redirect('/urls');
+  } else {
+    res.render("login", { user: users[req.cookies["user_id"]] || 0});
+  }
 });
 
 
-
+app.get("/register", (req, res) => {
+  if (users[req.cookies["user_id"]]) {
+    res.redirect('/urls');
+  } else {
+    res.render("register", { user: users[req.cookies["user_id"]] || 0});
+  }
+});
 
 
 //POST

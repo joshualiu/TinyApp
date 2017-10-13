@@ -5,8 +5,8 @@ Takes up w2d2 -> w2d5 @lighthouse lab.
 
 ## Final Product
 
-!["screenshot description"](#)
-!["screenshot description"](#)
+!["Screenshot of URLs page"](https://github.com/zhonghaoliu/TinyApp/blob/master/docs/urls-main.png?raw=true)
+!["Screenshot of Updating a long URL page"](https://github.com/zhonghaoliu/TinyApp/blob/master/docs/urls-update.png?raw=true)
 
 
 ## Dependencies

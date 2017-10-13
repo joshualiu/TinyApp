@@ -130,7 +130,7 @@ function urlsForUser(inputUser) {
 
 //only register and logged in users could access /urls/new
 app.get("/urls/new", (req, res) => {
-  if (req.cookies["user_id"]) {
+  if (users[req.cookies["user_id"]]) {
     let templateVars = { user: users[req.cookies["user_id"]] || 0};
     res.render("urls_new", templateVars);
     return ;
